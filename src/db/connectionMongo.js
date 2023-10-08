@@ -13,3 +13,12 @@ return mongoose.connect(url, {
 export default connectDB;
 
 
+/* 
+mongoose.connect('link')
+
+mongoose.connection.on("connected", ()=>{
+    console.log("Database Connected")
+})
+*/
+
+
