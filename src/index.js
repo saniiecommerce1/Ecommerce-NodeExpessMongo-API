@@ -4,6 +4,8 @@ import userRoutes from './routers/userRoutes.js'  //.js must in es6
 import productRoutes from './routers/productRoutes.js'  
 import orderRoutes from './routers/orderRoutes.js'  
 import cartRoutes from './routers/cartRoutes.js'  
+
+
 // import bodyParser from "body-parser";
 
 //for .env file
@@ -27,7 +29,8 @@ app.use(express.json())  //OR app.use(bodyParser.json())
 
 
 
-//for permission/register router in app
+
+//Routes
 app.use('/api/user' , userRoutes)   //'/api' is optional otherwise goto the router
 app.use('/api/product' , productRoutes)   
 app.use('/api/cart' , cartRoutes)   
@@ -37,7 +40,7 @@ app.use('/api/order' , orderRoutes)
 
 
 
-//mesg on dev to show host connected with express server
+
 
 
 //Middleware works if route otherthan this /api/users/ like /ap, /user/ID, /apuse/name

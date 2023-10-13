@@ -51,8 +51,8 @@ const getServiceById = async (req, res) =>{
 const updateService = async (req, res) =>{
     try{
         console.log(req.params)  //check by giving ID and otherthan ID like sana(error catch)
-        const updateProductSchema = await ProductSchema.findByIdAndUpdate(req.params.id, req.body, {new:true} )       
-        return updateProductSchema;
+        const updateProductSchema = await ProductSchema.findByIdAndUpdate(req.params.id, req.body, {new:true} )      
+        return updateProductSchema;   //.findById(Id).populate('product' , 'price')  //only want price field 
        
 
      

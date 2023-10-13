@@ -1,59 +1,55 @@
 import CartSchema from '../models/cartSchema.js'
-import OrderItemSchema from '../models/orderItemSchema.js'
+import ProductSchema from '../models/productSchema.js'
 
-
-
+// At starting
 const postService = async(req, res)=>{
-
-
-
-try{
-
+    
     //POST from frontend like this:
     // {
     //     "orderItems": [
-    // {"quantity": 2, "product": "6522cf610178c79d79c85a41"},
+    // {"quantity": 1, "product": "6522cf610178c79d79c85a41"},
     
     // {"quantity": 4, "product": "6522cf870178c79d79c85a43"},
     
     // {"quantity": 5, "product": "6522cfc10178c79d79c85a45"}
-    // ]
-        
+    // ],
+    // "user": "65247475fee2b8f8cec286db"
     // }
 
-    const orderItemsId = req.body.orderItems.map( async orderitem =>{
-        const order = {
-            quantity: orderitem.quantity,
-            product: orderitem.product}
 
-        const addOrderItem = new OrderItemSchema(order)  
-        const orderItem = await addOrderItem.save()   
-        return orderItem._id    
+    [{"quantity": 5}, {"product": "6522cfc10178c79d79c85a45"}]
+
+
+    try{
+
+    let totalPrice = 0
+    
+    const orderItems = req.body.orderItems.map( async orderitem =>{
+      
+
+        const product = await ProductSchema.findById(orderitem.product)
+        const price = product.price * orderitem.quantity  
+
+        orderitem.price = price
+
+        totalPrice += price
+
+        return orderitem   
     })
 
-    const orderItemsIdPromise = Promise.all(orderItemsId)
+    console.log(orderItems)
+    const orderItemsPromise = Promise.all(orderItems)
+    console.log(orderItemsPromise)
 
-    const orderItemsIdResolved = await orderItemsIdPromise
-    console.log(orderItemsIdResolved)
+    const orderItemsResolved = await orderItemsPromise
+    console.log(orderItemsResolved)
 
-    // find total orderItem price and then total orderItems
-
-    const totalOrderItemPriceList = await Promise.all(orderItemsIdResolved.map(async orderItemId =>{
-        const orderItem = await OrderItemSchema.findById(orderItemId).populate('product' , 'price')  //only want price field
-        const totalOrderItemPrice = orderItem.quantity * orderItem.product.price
-        return totalOrderItemPrice
-    
-    }))
-
-    console.log(totalOrderItemPriceList)
-
-    const totalPrice = totalOrderItemPriceList.reduce((a , b) => a+b , 0)
-
-    console.log(totalPrice)
 
     const data = {
-        orderItems : orderItemsIdResolved,
-        totalPrice: totalPrice } // calc from backend not frontend bc hacker can manipulate 1000 to 1
+        orderItems : orderItemsResolved,
+        totalPrice: totalPrice,
+        user: req.body.user
+    }
 
 const addCartSchema = new CartSchema(data)  //or simply req.body  
 
@@ -100,10 +96,41 @@ const getServiceById = async (req, res) =>{
 
 const updateService = async (req, res) =>{
     try{
-        console.log(req.params)  //check by giving ID and otherthan ID like sana(error catch)
-        const updateCartSchema = await CartSchema.findByIdAndUpdate(req.params.id, req.body, {new:true} )       
-        return updateCartSchema;
-       
+
+        console.log(req.params)
+
+        let totalPrice = 0
+    
+        const orderItems = req.body.orderItems.map( async orderitem =>{
+          
+    
+            const product = await ProductSchema.findById(orderitem.product)
+            const price = product.price * orderitem.quantity  
+    
+            orderitem.price = price
+    
+            totalPrice += price
+    
+            return orderitem   
+        })
+    
+        console.log(orderItems)
+        const orderItemsPromise = Promise.all(orderItems)
+        console.log(orderItemsPromise)
+    
+        const orderItemsResolved = await orderItemsPromise
+        console.log(orderItemsResolved)
+    
+    
+        const data = {
+            orderItems : orderItemsResolved,
+            totalPrice: totalPrice,
+            user: req.body.user
+        }
+          
+
+        const updateCart = await CartSchema.findByIdAndUpdate(req.params.id, data , {new:true} )       
+        return updateCart;
 
      
     } catch(error){        
@@ -113,6 +140,8 @@ const updateService = async (req, res) =>{
 }
 
 }
+
+
 const deleteService = async (req, res) =>{
 try{
     const deleteData = await CartSchema.findByIdAndDelete({_id: req.params.id})       
@@ -126,3 +155,7 @@ try{
 
 const cartService = {postService , getAllService, getServiceById, updateService, deleteService}
 export default cartService
+
+
+
+

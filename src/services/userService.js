@@ -17,8 +17,7 @@ res.status(404).json({ status: "userService POST catch error",
 
 
 const getAllService = async (req, res) =>{
-    try{  
-        console.log(test)
+    try{
         const getUserSchemas = await UserSchema.find({}).sort({"userName": 1}) //not in db sort      
         return getUserSchemas;
       

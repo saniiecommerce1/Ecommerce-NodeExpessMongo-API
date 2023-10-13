@@ -1,18 +1,12 @@
 import OrderSchema from '../models/orderSchema.js'
 import CartSchema from '../models/cartSchema.js'
-import OrderItemSchema from '../models/orderItemSchema.js'
+
 
 const postService = async(req, res)=>{
 
 try{
 
-    
-
-
-
-
-
-    const data = {
+   const data = {
         cart: req.body.cart,
         user: req.body.user, 
         dateCreated: req.body.dateCreated,
@@ -31,10 +25,6 @@ try{
     //     "country": "Pakistan",
     //     "orderStatus": "Pending"
     // }
- 
-
-
-
 
 const addOrderSchema = new OrderSchema(data)  //or simply req.body  
 
@@ -53,7 +43,7 @@ res.status(404).json({ status: "orderService POST catch error",
 const getAllService = async (req, res) =>{
     try{  
      
-        const getOrderSchemas = await OrderSchema.find({}).sort({"title": 1}) //not in db sort      
+        const getOrderSchemas = await OrderSchema.find({}).sort({"orderStatus": 1})    //not in db sort      
         return getOrderSchemas;
       
        
@@ -83,10 +73,12 @@ const getServiceById = async (req, res) =>{
       }
 }
 
+//PUT
+// {      "shippingAddress": "15-B/C" }
 
 const updateService = async (req, res) =>{
     try{
-        console.log(req.params)  //check by giving ID and otherthan ID like sana(error catch)
+        // console.log(req.params)  //check by giving ID and otherthan ID like sana(error catch)
         const updateOrderSchema = await OrderSchema.findByIdAndUpdate(req.params.id, req.body, {new:true} )       
         return updateOrderSchema;
        
@@ -100,26 +92,15 @@ const updateService = async (req, res) =>{
 
 }
 
-//delete order only delete order not cart and not orderItems
+//delete order only delete order not cart 
 //So 
-
-
-
 
 const deleteService = async (req, res) =>{
 try{
 
     const deleteData = await OrderSchema.findByIdAndDelete({_id: req.params.id}) 
         
-        const cartId = deleteData.cart     
-
-        const cart = await CartSchema.findById(cartId)
-
-        const orderitemsdelete = cart.orderItems.map(async orderitem =>{
-         await OrderItemSchema.findByIdAndDelete(orderitem)
-        })
-
-        Promise.all(orderitemsdelete)
+        const cartId = deleteData.cart    
 
         await CartSchema.findByIdAndDelete(cartId)
 

@@ -1,14 +1,27 @@
 import express from 'express';
 import usersController from '../controller/userController.js';
+import validateToken from '../validateToken.js';
 
 
+const app = express()
 const router = express.Router();
+
+// app.use(validateToken)  //it means all below route are secured not above route
+
+
 
 //Post info
 router.post('/', usersController.postData)
 
+router.post('/registration', usersController.registration)
+router.post('/login', usersController.login)
+router.post('/resetPwd', usersController.resetPwd)
+router.post('/forgetPwd', usersController.forgetPwd)  //OTP generate
+router.post('/verifyOTP', usersController.verifyOtp)  //OTP verify and password change
+ 
 // Get All info
-router.get('/', usersController.getAll)
+// router.get('/', usersController.getAll)
+router.get('/', validateToken, usersController.getAll)  //wants route secure by token
  
 
 //Get by ID
@@ -23,6 +36,12 @@ router.put('/:id', usersController.updateById)
 
 //Delete by ID
 router.delete('/:id', usersController.deleteById )
+
+
+
+
+
+
 
 
 //OR Get by username

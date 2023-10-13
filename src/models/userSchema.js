@@ -1,15 +1,18 @@
 import mongoose from "mongoose"
 
 const userSchemaModel = new mongoose.Schema({
-    userName:{type: String, trim: true, unique:true, required: true },
-    email: {type: String, trim: true},
+    email: {type: String, trim: true, required: true},
     password: {type: String},
+    confirmPassword: {type: String},
     firstName: {type: String},
     lastName: {type: String},
+    userName:{type: String},
     isAdmin: {type: Boolean},
     profilePicture:{type: String},
     phone:{type: Number},
-    address:{ type: String}
+    address:{ type: String},
+    otp: {type: Number, default: undefined},  //not show as field but when assign value become visibl
+    expirationOtp: {type: Number, default: undefined}   
     
 })
 

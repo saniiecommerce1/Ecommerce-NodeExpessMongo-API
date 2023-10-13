@@ -6,8 +6,7 @@ const postData = async(req, res)=>{
     try{
        
         const addData = await cartService.postService(req,res)
-        res.status(201).send(addData)   
-      
+        res.status(201).send(addData)         
 
 
       //catch error when post data not per schema rule/    
